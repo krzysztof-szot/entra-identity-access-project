@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/entra-identity-banner.svg" alt="Microsoft Entra Identity and Access Lab — Azure Security Engineering Portfolio" width="100%">
-</p>
-
 <h1 align="center">Microsoft Entra Identity &amp; Access Lab</h1>
 
 <p align="center">
