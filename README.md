@@ -44,7 +44,7 @@ Each phase includes:
 
 ## Explore the Project
 
-| 🏗️ Architecture | 🔐 Implementation | 🧪 Validation | 📸 Evidence |
+| Architecture | Implementation | Validation | Evidence |
 |:---:|:---:|:---:|:---:|
 | [View design](#target-architecture) | [Browse labs](#implementation-progress) | [Open tests](tests/) | [Open screenshots](evidence/) |
 | Identity and access flows | Documented lab scenarios | Positive and negative testing | Redacted implementation proof |
