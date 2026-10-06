@@ -86,7 +86,6 @@ The project covers or will cover:
 * PowerShell automation
 * Workload identities
 * Managed Identities
-* Azure Key Vault
 * Sign-in and Audit Logs
 * Identity monitoring
 * OAuth 2.0 and delegated / application permissions
