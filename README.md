@@ -5,8 +5,6 @@
 <h1 align="center">Microsoft Entra Identity &amp; Access Lab</h1>
 
 <p align="center">
-  <img alt="AZ-500 passed" src="https://img.shields.io/badge/AZ--500-PASSED-238636?style=for-the-badge">
-  <img alt="SC-300 in preparation" src="https://img.shields.io/badge/SC--300-IN%20PREPARATION-0078D4?style=for-the-badge">
   <img alt="18 documented labs" src="https://img.shields.io/badge/LABS-18%20DOCUMENTED-6f42c1?style=for-the-badge">
 </p>
 
