@@ -890,6 +890,5 @@ Configuration changes and access scenarios are validated using Microsoft Entra S
 | [evidence/](evidence/) | Published screenshots with per-day indexes |
 | [scripts/](scripts/) | Six Day 17 Microsoft Graph PowerShell scripts and usage instructions |
 | [queries/](queries/) | Six Day 16/18 KQL queries with evidence mapping |
-| [assets/](assets/) | Repository banner |
 
 The repository will continue to evolve as additional Microsoft Entra identity governance, privileged access, workload identity and automation scenarios are implemented.
