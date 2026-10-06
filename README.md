@@ -283,9 +283,8 @@ Selected, redacted screenshots from the lab. Each image links to its full eviden
 
 ## Target Architecture
 
-The following diagram represents the target architecture of the complete lab.
+The following diagram represents the target architecture of the complete project.
 
-The diagram combines implemented identity and application flows with the target state. Microsoft Graph PowerShell administration and the manual Joiner / Mover / Leaver labs are implemented. The Managed Identity lab currently demonstrates Azure Blob Storage access.
 
 ```mermaid
 flowchart TB
