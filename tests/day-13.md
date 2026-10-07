@@ -1,6 +1,6 @@
 # Day 13 — Workload Identities and Managed Identity Tests
 
-**Day 18 follow-up:** the [final Storage IAM evidence](../evidence/day-18/22-workload-rbac.png) separately confirms `Storage Blob Data Reader` at Storage Account scope for both managed identities. The runtime tests below retain their Day 13 context.
+**Day 18 follow-up:** the [final Storage IAM evidence](../evidence/day-18/22-workload-rbac.png) separately confirms `Storage Blob Data Reader` at Storage Account scope for both managed identities. The original Blob runtime tests below retain their Day 13 context; the later Key Vault extension is dated separately.
 
 Tests validate System-assigned and User-assigned Managed Identity authentication from Azure Automation, private Blob authorization with Azure RBAC, negative access cases, a published Runbook job and Microsoft Entra workload sign-in monitoring.
 
@@ -114,11 +114,45 @@ Tests validate System-assigned and User-assigned Managed Identity authentication
 
 ## Final state
 
+The following points retain the original Blob Storage test scope.
+
 - The System-assigned MI read the proof Blob after `Storage Blob Data Reader` was assigned.
 - The same identity's pre-assignment read failed with `403`, and its post-assignment write test was denied as expected.
 - The published System-assigned Runbook completed successfully.
 - The separate User-assigned MI was attached, explicitly selected and used successfully for Blob read.
 - Both identities appeared in successful Microsoft Entra Managed identity sign-ins.
 - No gMSA implementation, Microsoft Graph permission assignment for MI, or infrastructure cleanup is claimed.
+
+## Key Vault extension (2026-10-07)
+
+These results concern `rb-bfl-keyvault-read` accessing `bfl-kv-proof` in `kv-bfl-identity-ks01`. They are separate from D13-01–D13-10. A captured successful result is distinguished from the earlier owner-reported negative test; no Azure operation was rerun during repository validation.
+
+| Test ID | Test | Expected result | Actual result | Outcome |
+| --- | --- | --- | --- | --- |
+| D13-KV-01 | System-assigned identity configuration | Existing Automation Account identity is enabled | `aa-bfl-identity-lab` System assigned On; principal ID masked | Pass (configuration) |
+| D13-KV-02 | Read before the reported Key Vault role grant | Authenticated workload receives an RBAC denial | Owner-supplied transcript reports HTTP `403` / `Forbidden` / `ForbiddenByRbac` at `06:28:56.0200272Z`; no screenshot or exported job record | Partial (owner-reported; not independently verified) |
+| D13-KV-03 | Scoped secret-read role | Managed Identity has `Key Vault Secrets User` at this vault | Name-filtered IAM lists `aa-bfl-identity-lab`, Managed identity, `Key Vault Secrets User`, `This resource` | Pass (shown assignment; not all effective permissions) |
+| D13-KV-04 | Test pane secret read | Expected Allowed run reads the named secret without printing its value | Completed; HTTP `200`; `READ: ALLOWED (secret value withheld)`; `EXPECTED_READ_ALLOWED` | Pass (captured output) |
+| D13-KV-05 | Published Runbook job | A separate Azure job completes the same read | Completed, Ran on Azure; same target and HTTP `200` / `EXPECTED_READ_ALLOWED` | Pass (captured job and output) |
+
+### D13-KV-01–D13-KV-03 — Identity, reported denial and role scope
+
+**Acting identity:** the lab uses the System-assigned identity of `aa-bfl-identity-lab`; its exact Object ID is masked in the captures.
+
+**Evidence:** [18 — Identity On](../evidence/day-13/18-key-vault-system-assigned-identity.png), [owner-supplied denial transcript](../evidence/day-13/key-vault-denied-transcript.md), [21 — Vault-scoped role](../evidence/day-13/21-key-vault-secrets-user-role.png).
+
+**Boundary:** the transcript preserves the reported negative outcome, not an independently reviewed HTTP trace or screenshot. The later IAM image confirms the displayed role and scope, not the grant timestamp. Screenshot numbering follows capture order and is not a complete RBAC event timeline. The filtered, masked view does not prove absence of other access paths. Its banner reports two users with elevated tenant access; their assignments and remediation are not evidenced here.
+
+### D13-KV-04–D13-KV-05 — Captured successful reads
+
+**Expected:** `ExpectedResult: Allowed` produces a successful secret read in the Test pane and a separate published job, without exposing the value.
+
+**Observed:** [screenshot 19](../evidence/day-13/19-key-vault-read-allowed-test.png) records `2026-10-07T06:41:01.6307592Z`; [screenshot 20](../evidence/day-13/20-key-vault-read-allowed-job.png) records `2026-10-07T06:51:05.5666305Z`. Both name `kv-bfl-identity-ks01 / bfl-kv-proof`, report Managed Identity token acquisition, HTTP `200`, `READ: ALLOWED (secret value withheld)` and `RESULT: EXPECTED_READ_ALLOWED`. The separate job is Completed and Ran on Azure.
+
+**Result:** Pass for the displayed read outcomes. `Ran As: User` is job metadata and does not identify the Key Vault caller. The `Get-AzAccessToken` warning in screenshot 19 does not negate its successful output; screenshot 20's Output tab does not prove that no warnings occurred.
+
+**Source boundary:** the [reference Runbook](../scripts/day-13/rb-bfl-keyvault-read.ps1) is not an exported snapshot of the deployed job. Code review or local tests do not prove that exact source was executed in Azure.
+
+**Outside this extension:** Key Vault write-denial tests, certificate operations, User-assigned Key Vault access and Key Vault data-plane audit logging. The read results do not establish these capabilities or complete effective-access/network configuration coverage.
 
 See [Day 13 evidence](../evidence/day-13/README.md) and [Day 13 implementation notes](../docs/day-13.md).

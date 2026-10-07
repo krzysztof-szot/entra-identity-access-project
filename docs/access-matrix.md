@@ -1,6 +1,6 @@
 # Access Matrix
 
-This matrix summarizes the Baltic Finance Lab through Day 18. Each row names its evidence point: an earlier lab record is not a fresh inventory of every current permission. Day 18 confirms selected final states, including PIM eligibility, emergency CA exclusions, revoked external access and workload RBAC.
+This matrix summarizes the Baltic Finance Lab through Day 18, with the dated 2026-10-07 Key Vault extension below. Each row names its evidence point: an earlier lab record is not a fresh inventory of every current permission. Day 18 confirms selected final states, including PIM eligibility, emergency CA exclusions, revoked external access and workload RBAC.
 
 ## Workforce and External Identities
 
@@ -57,7 +57,7 @@ Permanent Eligible and Permanent Active are different states. The Day 17 direct 
 | `SG-GSA-Pilot` | GSA and MDCA session-control pilot | Anna is the sole direct member in the Day 15 capture |
 | `SG-Graph-Automation-Lab` | Graph provisioning and membership lab | `graph.operator` is a direct member in Day 17 |
 
-The original group design used Security groups with Assigned membership and `Role assignable: No`. Day 18 does not independently recheck that property or group owners. Protection of `SG-Emergency-Access` membership against less-privileged administrators is an open [validation task](remaining-work.md).
+The original group design used Security groups with Assigned membership and `Role assignable: No`. Day 18 does not independently recheck that property or group owners. Protection of `SG-Emergency-Access` membership against less-privileged administrators is an open [validation task](../tests/day-18.md#residual-findings--not-fully-assessed).
 
 The Day 10 Access Package also delivered an application resource role directly alongside group membership. Group-based assignment is the baseline design, not a claim that every lab entitlement used only a group. The auditor's `Expense.Submitter` role was a lab simplification, not a production read-only audit role.
 
@@ -90,5 +90,8 @@ Both emergency accounts are effectively excluded through the emergency group in 
 | Expense Portal | No Application `User.Read.All` grant shown | Temporary Day 12 app-only experiment removed; final consent reviewed in Day 18 |
 | `aa-bfl-identity-lab` | `Storage Blob Data Reader` at Storage Account scope | Day 13 runtime read/deny tests; Day 18 IAM review |
 | `mi-bfl-shared-reader` | `Storage Blob Data Reader` at Storage Account scope | Day 13 explicit user-assigned identity read; Day 18 IAM review |
+| `aa-bfl-identity-lab` System-assigned MI | `Key Vault Secrets User` at `kv-bfl-identity-ks01` vault scope | 2026-10-07 [IAM assignment](../evidence/day-13/21-key-vault-secrets-user-role.png) and [completed secret-read job](../evidence/day-13/20-key-vault-read-allowed-job.png); masked IDs limit exact principal correlation; write denial and all effective permissions were not tested |
 
-The zero-credential App Registration capture does not by itself validate the Easy Auth credential path or Graph token renewal. See [remaining work](remaining-work.md) for the corresponding test and missing source artifacts.
+The Key Vault role belongs to the Automation identity and is available to runbooks using that identity; it is not restricted to one Runbook. The filtered IAM capture also reports two users with elevated tenant access, without identifying them. Their assignments require a separate review; this evidence does not establish remediation. No Key Vault role or test is claimed for `mi-bfl-shared-reader` or Expense Portal.
+
+The zero-credential App Registration capture does not by itself validate the Easy Auth credential path or Graph token renewal. See the [Day 18 application assessment](day-18.md#application-permissions-and-easy-auth-credentials) for the later credential-reference evidence and remaining runtime checks. Deployed application source is still absent from this repository.
