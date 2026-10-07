@@ -93,3 +93,26 @@ Scripts 02, 03, 04 and 06 check the original `adm-lab` UPN; scripts 02, 04 and 0
 The six scripts were retained unchanged by the documentation review. These instructions were checked against their parameters and guards; the review did not execute Graph writes or create a new tenant test result.
 
 See [Day 17 implementation](../docs/day-17.md), [test history](../tests/day-17.md) and [Day 18 closure](../docs/day-18.md).
+
+## Day 13 — Read-only Key Vault Runbook
+
+[rb-bfl-keyvault-read.ps1](day-13/rb-bfl-keyvault-read.ps1) is the maintained lab source for the Key Vault read scenario. It performs one secret GET, withholds the token and secret value, and distinguishes RBAC denial from other HTTP or transport failures. An exact source export from the historical published job is unavailable; this repository copy does not establish byte-for-byte identity with that job.
+
+Runbook requirements:
+
+- Azure Automation PowerShell **7.4** runtime with **Az.Accounts** available.
+- Automation account `aa-bfl-identity-lab` with its system-assigned Managed Identity enabled.
+- Vault `kv-bfl-identity-ks01`, secret `bfl-kv-proof`, and network access to the vault endpoint.
+- For the allowed-read scenario, **Key Vault Secrets User** assigned to that identity at **vault scope** under the vault's Azure RBAC permission model.
+
+The parameter defaults to `ExpectedResult = Denied`. The published allowed-read scenario already has the role grant, so set **ExpectedResult to Allowed** when rerunning that job. The runbook does not create secrets or change role assignments; an unexpected result fails the job.
+
+The source requests `Get-AzAccessToken -AsSecureString`. A historical breaking-change warning is not proof that the switch was missing: the [Az.Accounts 4.0.1 changelog](https://github.com/Azure/azure-powershell/blob/main/src/Accounts/Accounts/ChangeLog.md#version-401) records a fix for warnings appearing despite its use.
+
+Run the [16 offline fixture checks](../tests/offline/key-vault-read.Tests.ps1) locally in a separate PowerShell 7.4+ process:
+
+```powershell
+pwsh -NoProfile -File ./tests/offline/key-vault-read.Tests.ps1
+```
+
+The harness parses the repository runbook and stubs every Azure/network command. Passing it validates local response handling and output redaction, not a new Azure job or RBAC result. See [Day 13 documentation](../docs/day-13.md) and [evidence](../evidence/day-13/README.md).

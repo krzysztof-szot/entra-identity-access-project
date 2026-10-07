@@ -90,6 +90,7 @@ The project covers or will cover:
 * SCIM application provisioning and deprovisioning
 * Access package governance and access recertification
 * Azure Automation and Storage data-plane RBAC
+* Azure Key Vault secrets and vault-scoped Azure RBAC
 
 ---
 
@@ -216,8 +217,10 @@ The currently implemented environment includes:
 * Azure Automation with System-assigned and User-assigned Managed Identities
 * Microsoft Entra authentication to private Azure Blob Storage
 * Storage Blob Data Reader authorization
-* Negative read-before-RBAC and read-only write-denial tests
+* Blob negative read-before-RBAC and read-only write-denial tests
 * Runbook execution and Managed identity sign-in monitoring
+* Azure Key Vault secret read through the Automation Account's System-assigned identity, with `Key Vault Secrets User` at vault scope
+* Key Vault HTTP 200 in both the Test pane and a completed published job; the earlier RBAC denial is retained as an owner-supplied transcript without a screenshot
 
 ### SSO, Application Proxy and Provisioning
 
@@ -279,7 +282,7 @@ Selected, redacted screenshots from the lab. Each image links to its full eviden
 
 ## Target Architecture
 
-The following diagram represents the target architecture of the complete project.
+The diagram combines implemented flows with explicitly marked planned automation. The [Day 13 Key Vault extension](docs/day-13.md#key-vault-extension-2026-10-07) demonstrates secret reads from Azure Automation using its System-assigned identity. Certificate operations and Expense Portal access to Key Vault have not been demonstrated.
 
 
 ```mermaid
@@ -323,10 +326,11 @@ flowchart TB
     %% =========================
 
     AUTO["Azure Automation Runbooks<br/>aa-bfl-identity-lab"]
-    MI["Managed Identities<br/>System-assigned / User-assigned"]
+    MI["System-assigned Managed Identity<br/>aa-bfl-identity-lab"]
+    UAMI["User-assigned Managed Identity<br/>mi-bfl-shared-reader"]
     BLOB["Private Azure Blob Storage<br/>identity-lab container"]
-    KV["Azure Key Vault<br/>Planned"]
-    SECRETS["Secrets / Certificates<br/>Planned"]
+    KV["Azure Key Vault<br/>kv-bfl-identity-ks01"]
+    SECRETS["Lab secret<br/>bfl-kv-proof"]
 
     %% =========================
     %% MONITORING
@@ -374,10 +378,13 @@ flowchart TB
     %% =========================
 
     AUTO -->|"Runs as the selected identity"| MI
+    AUTO -->|"Explicit Client ID selection for Blob lab"| UAMI
     ENTRA -->|"Managed identity authentication / token issuance"| MI
+    ENTRA -->|"Managed identity authentication / token issuance"| UAMI
     MI -->|"Entra token / Storage Blob Data Reader"| BLOB
-    MI -.->|"Planned Key Vault access"| KV
-    KV -.->|"Planned secret and certificate storage"| SECRETS
+    UAMI -->|"Entra token / Storage Blob Data Reader"| BLOB
+    MI -->|"Entra token / Key Vault Secrets User"| KV
+    KV -->|"Secret read demonstrated; value withheld"| SECRETS
 
     %% =========================
     %% LOGGING
@@ -405,10 +412,10 @@ flowchart TB
     class ADM,PIM admin;
     class AUTH security;
     class APPREG,SP,GROUPS,PORTAL app;
-    class AUTO,MI,BLOB workload;
+    class AUTO,MI,UAMI,BLOB,KV,SECRETS workload;
     class LOGS,LAW monitor;
     class PS,GRAPH automation;
-    class JML,KV,SECRETS planned;
+    class JML planned;
 ```
 
 ---
@@ -726,6 +733,7 @@ Evidence: [`evidence/day-12/`](evidence/day-12/)
 * [x] `Storage Blob Data Reader` assignment and successful read
 * [x] Negative write test under read-only authorization
 * [x] Published Runbook and Managed identity sign-in verification
+* [x] 2026-10-07 extension: Key Vault secret read with vault-scoped `Key Vault Secrets User`, Test pane and published-job evidence
 
 Documentation: [`docs/day-13.md`](docs/day-13.md)
 
@@ -888,7 +896,7 @@ Configuration changes and access scenarios are validated using Microsoft Entra S
 | [docs/](docs/) | Day 01–18 implementation notes, access matrix, architecture |
 | [tests/](tests/) | Expected behavior, observed results and evidence boundaries |
 | [evidence/](evidence/) | Published screenshots with per-day indexes |
-| [scripts/](scripts/) | Six Day 17 Microsoft Graph PowerShell scripts and usage instructions |
+| [scripts/](scripts/) | Six Day 17 Microsoft Graph PowerShell scripts, the Day 13 Key Vault read Runbook and usage instructions |
 | [queries/](queries/) | Six Day 16/18 KQL queries with evidence mapping |
 
 The repository will continue to evolve as additional Microsoft Entra identity governance, privileged access, workload identity and automation scenarios are implemented.

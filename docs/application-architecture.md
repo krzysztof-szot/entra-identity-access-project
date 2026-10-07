@@ -38,13 +38,13 @@ response_type=code id_token
 scope=openid offline_access profile https://graph.microsoft.com/User.Read
 ```
 
-The application's `/graph/profile` endpoint returns selected profile fields. Day 18 shows delegated `User.Read`, no remaining App Registration credentials, and a successful Graph response in the captured session. Fresh code redemption and token renewal after credential cleanup require the [Easy Auth follow-up](remaining-work.md); the credential mechanism cannot be inferred from the permission list alone.
+The application's `/graph/profile` endpoint returns selected profile fields. Day 18 shows delegated `User.Read`, no remaining App Registration credentials, and a successful Graph response in the captured session. Its [later provider configuration](day-18.md#application-permissions-and-easy-auth-credentials) records the `MICROSOFT_PROVIDER_AUTHENTICATION_SECRET` reference. Fresh code redemption and token renewal after credential cleanup require the [Easy Auth follow-up](../tests/day-18.md#residual-findings--not-fully-assessed); the credential mechanism cannot be inferred from the permission list alone.
 
-The separate Day 13 workload uses **Azure Automation managed identities → Azure Blob Storage**. It is not evidence that Expense Portal itself uses a managed identity or Key Vault. Key Vault integration remains a planned extension.
+The separate [Day 13 workload](day-13.md) uses **Azure Automation managed identities → Azure Blob Storage**. Its 2026-10-07 extension demonstrates **Automation System-assigned identity → Azure Key Vault → lab secret**, with vault-scoped `Key Vault Secrets User` and successful read evidence. Expense Portal itself has no demonstrated Managed Identity or Key Vault integration; its Easy Auth provider secret is a separate credential path.
 
 ## Source and Related Labs
 
 - [Day 02 — Application identity](day-02.md)
 - [Day 12 — Graph integration](day-12.md)
 - [Day 18 — Current assessment](day-18.md)
-- [Missing deployment/source artifacts](remaining-work.md)
+- [Evidence and runtime limitations](day-18.md#verification-and-limitations)
