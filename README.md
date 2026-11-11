@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img alt="Microsoft Entra ID" src="https://img.shields.io/badge/Microsoft-Entra%20ID-0078D4?style=flat-square">
+  <img alt="Microsoft Entra ID P2" src="https://img.shields.io/badge/Microsoft-Entra%20ID-0078D4?style=flat-square">
   <img alt="Azure" src="https://img.shields.io/badge/Microsoft-Azure-0078D4?style=flat-square">
   <img alt="Microsoft Graph" src="https://img.shields.io/badge/Microsoft-Graph-5C2D91?style=flat-square">
   <img alt="PowerShell" src="https://img.shields.io/badge/PowerShell-Automation-3973B9?style=flat-square">
