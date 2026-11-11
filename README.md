@@ -1,5 +1,7 @@
 <h1 align="center">Microsoft Entra Identity &amp; Access Project</h1>
 
+<p align="center"><strong>Microsoft Entra ID · Identity Governance · Azure Security</strong></p>
+
 <p align="center">
   <img alt="18 documented labs" src="https://img.shields.io/badge/LABS-18%20DOCUMENTED-6f42c1?style=for-the-badge">
   <img alt="Educational scope completed" src="https://img.shields.io/badge/STATUS-COMPLETED-238636?style=for-the-badge">
